@@ -1,4 +1,4 @@
-# AI Security Analyst
+﻿# AI Security Analyst
 
 Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 
@@ -22,16 +22,16 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 - Erkennung mehrerer fehlgeschlagener Anmeldeversuche innerhalb eines definierten Zeitfensters
 - Zusammenfassung korrelierter Alerts als Security Incident
 - MITRE ATT&CK-Zuordnung
-- KI-gestützte Alert-Erklärung
+- KI-gestÃ¼tzte Alert-ErklÃ¤rung
 - Streamlit Dashboard
 - CSV-Report-Export
 - Event Aggregation
 - Duplicate Detection
-- SOC-artige Übersicht
+- SOC-artige Ãœbersicht
 
 ---
 
-# Dashboard-Übersicht
+# Dashboard-Ãœbersicht
 
 ![Dashboard Overview](dashboard.png)
 
@@ -43,9 +43,17 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 
 ---
 
+# Alert-Detailansicht
+
+Die Detailansicht zeigt alle relevanten Informationen zu einem ausgewählten Security Alert. Dazu gehören Risikostufe, Wazuh-Level, Rule-ID, Zeitstempel, Agent, Benutzer, Quell-IP, MITRE-ATT&CK-Zuordnung und eine konkrete Handlungsempfehlung.
+
+![Alert Detail View](dashboard_alert_detail_view.png)
+
+---
+
 # Brute-Force Detection und Event-Korrelation
 
-Die Anwendung erkennt mehrere fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb eines definierten Zeitfensters. Die zusammengehörigen Alerts werden als korrelierter Security Incident mit Risikostufe, betroffenem Agent, Anzahl der Ereignisse, Zeitfenster und Handlungsempfehlung dargestellt.
+Die Anwendung erkennt mehrere fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb eines definierten Zeitfensters. Die zusammengehÃ¶rigen Alerts werden als korrelierter Security Incident mit Risikostufe, betroffenem Agent, Anzahl der Ereignisse, Zeitfenster und Handlungsempfehlung dargestellt.
 
 ![Brute-Force Detection](dashboard_bruteforce_detection.png)
 
@@ -87,19 +95,19 @@ Die Anwendung erkennt mehrere fehlgeschlagene Anmeldeversuche derselben Quell-IP
 
 ```text
 Wazuh SIEM
-    ↓
+    â†“
 alerts_export.json
-    ↓
+    â†“
 Python Alert Pipeline
-    ↓
+    â†“
 Risikoklassifizierung
-    ↓
+    â†“
 Event-Korrelation und Brute-Force-Erkennung
-    ↓
+    â†“
 MITRE ATT&CK-Zuordnung
-    ↓
+    â†“
 LLM-Analyse mit Ollama
-    ↓
+    â†“
 Streamlit Dashboard
 ```
 
@@ -107,9 +115,9 @@ Streamlit Dashboard
 
 # Brute-Force-Erkennung
 
-Ein Brute-Force-Verdacht wird ausgelöst, wenn mindestens fünf fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb von zehn Minuten erkannt werden.
+Ein Brute-Force-Verdacht wird ausgelÃ¶st, wenn mindestens fÃ¼nf fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb von zehn Minuten erkannt werden.
 
-Der erzeugte Incident enthält unter anderem:
+Der erzeugte Incident enthÃ¤lt unter anderem:
 
 - Risikostufe
 - Incident-Typ
@@ -130,13 +138,13 @@ git clone https://github.com/n-somas/ai-security-analyst.git
 cd ai-security-analyst
 ```
 
-## Abhängigkeiten installieren
+## AbhÃ¤ngigkeiten installieren
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Tests ausführen
+## Tests ausfÃ¼hren
 
 ```bash
 python -m pytest -q
@@ -176,7 +184,7 @@ streamlit run src/dashboard.py
 
 | Technik | Beschreibung |
 |---|---|
-| T1078 | Gültige Benutzerkonten |
+| T1078 | GÃ¼ltige Benutzerkonten |
 | T1110.001 | Password Guessing |
 | T1548.003 | sudo / Rechteausweitung |
 
@@ -184,7 +192,7 @@ streamlit run src/dashboard.py
 
 # Projektstatus
 
-Aktiver Showcase für:
+Aktiver Showcase fÃ¼r:
 
 - SOC Analyst
 - Cybersecurity Analyst
@@ -204,3 +212,4 @@ Aktiver Showcase für:
 - Docker Deployment
 - Echtzeit-Monitoring
 - Multi-Agent AI Workflow
+
