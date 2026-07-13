@@ -1,215 +1,187 @@
-﻿# AI Security Analyst
+# AI Security Analyst
 
-Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
+Lokales SOC-Showcase zur Analyse von Wazuh-Alerts mit Event-Korrelation, Threat Scoring, MITRE-ATT&CK-Zuordnung und lokaler KI-Auswertung über Ollama.
 
-- Wazuh SIEM
-- Python Security Pipeline
-- Streamlit Dashboard
-- MITRE ATT&CK-Zuordnung
-- lokaler KI-Analyse mit Ollama
-- Threat Scoring
-- Event Correlation
-- Brute-Force-Erkennung
-- KI-basierter Alert-Analyse
+## Dashboard
 
----
+### Command Center
 
-# Features
+Das Command Center zeigt die wichtigsten Kennzahlen, die aktuelle Risikoverteilung, den durchschnittlichen Threat Score sowie aktive Agents und erkannte MITRE-Techniken.
 
-- Analyse echter Wazuh Security Alerts
-- Risikoklassifizierung nach LOW, MEDIUM und HIGH
-- Eigene Risiko-Eskalation anhand erkannter Event-Muster
-- Erkennung mehrerer fehlgeschlagener Anmeldeversuche innerhalb eines definierten Zeitfensters
-- Zusammenfassung korrelierter Alerts als Security Incident
-- MITRE ATT&CK-Zuordnung
-- KI-gestÃ¼tzte Alert-ErklÃ¤rung
-- Streamlit Dashboard
-- CSV-Report-Export
-- Event Aggregation
-- Duplicate Detection
-- SOC-artige Ãœbersicht
+![Command Center](dashboard_v4_command_center.png)
 
----
+### Incident Center
 
-# Dashboard-Ãœbersicht
+Mehrere fehlgeschlagene Anmeldeversuche derselben Quell-IP werden innerhalb eines definierten Zeitfensters korreliert und als gemeinsamer Security Incident dargestellt.
 
-![Dashboard Overview](dashboard.png)
+![Incident Center](dashboard_v4_incident_center.png)
 
----
+### Investigation
 
-# Alert-Tabelle
+Die Investigation-Ansicht zeigt technische Alert-Details, Threat Score, Risikobegründung, Handlungsempfehlung und die optionale lokale KI-Analyse.
 
-![Alerts Table](dashboard_alerts.png)
+![Investigation](dashboard_v4_investigation.png)
 
----
+## Funktionen
 
-# Alert-Detailansicht
+- Verarbeitung echter Wazuh-Security-Alerts
+- Risikoklassifizierung nach `LOW`, `MEDIUM` und `HIGH`
+- nachvollziehbarer Threat Score von 0 bis 100
+- Event-Korrelation und Brute-Force-Erkennung
+- MITRE-ATT&CK-Zuordnung
+- konkrete Handlungsempfehlungen
+- lokale KI-Analyse mit Ollama
+- filterbare Alert-Übersicht
+- Incident- und Investigation-Ansicht
+- CSV-Berichtsexport
+- automatisierte Tests mit Pytest
 
-Die Detailansicht zeigt alle relevanten Informationen zu einem ausgewählten Security Alert. Dazu gehören Risikostufe, Wazuh-Level, Rule-ID, Zeitstempel, Agent, Benutzer, Quell-IP, MITRE-ATT&CK-Zuordnung und eine konkrete Handlungsempfehlung.
+## Threat Scoring
 
-![Alert Detail View](dashboard_alert_detail_view.png)
+Der Threat Score kombiniert mehrere Faktoren:
 
----
+- Wazuh-Level
+- bekannte Angriffsmuster
+- vorhandene Quell-IP
+- MITRE-ATT&CK-Zuordnung
+- definierte Mindestwerte für `MEDIUM` und `HIGH`
 
-# Brute-Force Detection und Event-Korrelation
+Der Score wird auf maximal 100 Punkte begrenzt und zusammen mit einer Begründung in der Investigation-Ansicht angezeigt.
 
-Die Anwendung erkennt mehrere fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb eines definierten Zeitfensters. Die zusammengehÃ¶rigen Alerts werden als korrelierter Security Incident mit Risikostufe, betroffenem Agent, Anzahl der Ereignisse, Zeitfenster und Handlungsempfehlung dargestellt.
+## Brute-Force-Erkennung
 
-![Brute-Force Detection](dashboard_bruteforce_detection.png)
+Ein Brute-Force-Verdacht wird erzeugt, wenn mindestens fünf fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb von zehn Minuten erkannt werden.
 
----
-
-# KI-Alert-Analyse
-
-![AI Alert Analysis](dashboard_ai_alerts_analysis.png)
-
----
-
-# Tech Stack
-
-## Backend
-
-- Python 3
-- Requests
-- Pandas
-- Pytest
-
-## Security Stack
-
-- Wazuh SIEM
-- MITRE ATT&CK
-- Linux Auth Logs
-
-## KI
-
-- Ollama
-- Llama 3.2 3B
-
-## Frontend
-
-- Streamlit
-
----
-
-# Architektur
-
-```text
-Wazuh SIEM
-    â†“
-alerts_export.json
-    â†“
-Python Alert Pipeline
-    â†“
-Risikoklassifizierung
-    â†“
-Event-Korrelation und Brute-Force-Erkennung
-    â†“
-MITRE ATT&CK-Zuordnung
-    â†“
-LLM-Analyse mit Ollama
-    â†“
-Streamlit Dashboard
-```
-
----
-
-# Brute-Force-Erkennung
-
-Ein Brute-Force-Verdacht wird ausgelÃ¶st, wenn mindestens fÃ¼nf fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb von zehn Minuten erkannt werden.
-
-Der erzeugte Incident enthÃ¤lt unter anderem:
+Der Incident enthält:
 
 - Risikostufe
 - Incident-Typ
 - Quell-IP
 - betroffenen Agent
 - Anzahl der korrelierten Alerts
-- erstes und letztes erkanntes Ereignis
+- erstes und letztes Ereignis
 - Handlungsempfehlung
 
----
+## Architektur
 
-# Installation
+```text
+Wazuh SIEM
+    |
+    v
+alerts_export.json
+    |
+    v
+Python Alert Pipeline
+    |
+    +--> Risikoklassifizierung
+    |
+    +--> Threat Scoring
+    |
+    +--> Event-Korrelation
+    |
+    +--> MITRE ATT&CK
+    |
+    +--> lokale LLM-Analyse mit Ollama
+    |
+    v
+Streamlit SOC Dashboard
+```
 
-## Repository klonen
+## Tech Stack
+
+### Backend
+
+- Python 3
+- Pandas
+- Requests
+- Pytest
+
+### Security
+
+- Wazuh SIEM
+- MITRE ATT&CK
+- Linux Authentication Logs
+- regelbasierte Event-Korrelation
+
+### KI
+
+- Ollama
+- Llama 3.2 3B
+
+### Frontend
+
+- Streamlit
+- Altair
+- eigenes Dark Theme
+
+## Installation
+
+### Repository klonen
 
 ```bash
 git clone https://github.com/n-somas/ai-security-analyst.git
 cd ai-security-analyst
 ```
 
-## AbhÃ¤ngigkeiten installieren
+### Abhängigkeiten installieren
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-## Tests ausfÃ¼hren
+### Tests ausführen
 
 ```bash
 python -m pytest -q
 ```
 
-## Ollama installieren
-
-```text
-https://ollama.com/download
-```
-
-## Modell herunterladen
+### Ollama-Modell herunterladen
 
 ```bash
 ollama pull llama3.2:3b
 ```
 
-## Dashboard starten
+### Dashboard starten
 
 ```bash
 streamlit run src/dashboard.py
 ```
 
----
+Das Dashboard ist anschließend standardmäßig unter `http://localhost:8501` erreichbar.
 
-# Beispiel-Alerts
+## Beispiel-Alerts
 
 - PAM Authentication Failure
-- sudo to ROOT
 - PAM Misconfiguration
-- Failed Logins
+- User Login Failed
+- Successful sudo to ROOT
 - Wazuh Agent Events
 
----
-
-# MITRE ATT&CK-Beispiele
+## MITRE-ATT&CK-Beispiele
 
 | Technik | Beschreibung |
 |---|---|
-| T1078 | GÃ¼ltige Benutzerkonten |
+| T1078 | Valid Accounts |
 | T1110.001 | Password Guessing |
-| T1548.003 | sudo / Rechteausweitung |
+| T1548.003 | Sudo and Sudo Caching |
 
----
+## Projektstatus
 
-# Projektstatus
-
-Aktiver Showcase fÃ¼r:
+Aktiver Showcase für:
 
 - SOC Analyst
 - Cybersecurity Analyst
-- SIEM / Blue Team
+- SIEM und Blue Team
 - Security Automation
 - AI-assisted Security Operations
 
----
-
-# Geplante Erweiterungen
+## Geplante Erweiterungen
 
 - Live Alert Streaming
 - Threat Intelligence Feeds
 - VirusTotal Integration
 - GeoIP Mapping
-- PDF-Reports
+- persistentes Incident Management mit SQLite
 - Docker Deployment
-- Echtzeit-Monitoring
-- Multi-Agent AI Workflow
-
+- PDF-Reports
+- GitHub Actions
