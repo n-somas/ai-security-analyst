@@ -9,6 +9,7 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 - lokaler KI-Analyse mit Ollama
 - Threat Scoring
 - Event Correlation
+- Brute-Force-Erkennung
 - KI-basierter Alert-Analyse
 
 ---
@@ -18,6 +19,8 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 - Analyse echter Wazuh Security Alerts
 - Risikoklassifizierung nach LOW, MEDIUM und HIGH
 - Eigene Risiko-Eskalation anhand erkannter Event-Muster
+- Erkennung mehrerer fehlgeschlagener Anmeldeversuche innerhalb eines definierten Zeitfensters
+- Zusammenfassung korrelierter Alerts als Security Incident
 - MITRE ATT&CK-Zuordnung
 - KI-gestützte Alert-Erklärung
 - Streamlit Dashboard
@@ -40,6 +43,14 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 
 ---
 
+# Brute-Force Detection und Event-Korrelation
+
+Die Anwendung erkennt mehrere fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb eines definierten Zeitfensters. Die zusammengehörigen Alerts werden als korrelierter Security Incident mit Risikostufe, betroffenem Agent, Anzahl der Ereignisse, Zeitfenster und Handlungsempfehlung dargestellt.
+
+![Brute-Force Detection](dashboard_bruteforce_detection.png)
+
+---
+
 # KI-Alert-Analyse
 
 ![AI Alert Analysis](dashboard_ai_alerts_analysis.png)
@@ -53,6 +64,7 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 - Python 3
 - Requests
 - Pandas
+- Pytest
 
 ## Security Stack
 
@@ -76,11 +88,13 @@ Ein lokales Cybersecurity-Analyse- und SOC-Showcase-Projekt mit:
 ```text
 Wazuh SIEM
     ↓
-alerts.json
+alerts_export.json
     ↓
 Python Alert Pipeline
     ↓
 Risikoklassifizierung
+    ↓
+Event-Korrelation und Brute-Force-Erkennung
     ↓
 MITRE ATT&CK-Zuordnung
     ↓
@@ -88,6 +102,22 @@ LLM-Analyse mit Ollama
     ↓
 Streamlit Dashboard
 ```
+
+---
+
+# Brute-Force-Erkennung
+
+Ein Brute-Force-Verdacht wird ausgelöst, wenn mindestens fünf fehlgeschlagene Anmeldeversuche derselben Quell-IP innerhalb von zehn Minuten erkannt werden.
+
+Der erzeugte Incident enthält unter anderem:
+
+- Risikostufe
+- Incident-Typ
+- Quell-IP
+- betroffenen Agent
+- Anzahl der korrelierten Alerts
+- erstes und letztes erkanntes Ereignis
+- Handlungsempfehlung
 
 ---
 
@@ -104,6 +134,12 @@ cd ai-security-analyst
 
 ```bash
 pip install -r requirements.txt
+```
+
+## Tests ausführen
+
+```bash
+python -m pytest -q
 ```
 
 ## Ollama installieren
