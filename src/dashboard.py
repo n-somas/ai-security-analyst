@@ -102,6 +102,65 @@ st.dataframe(
     hide_index=True,
 )
 
+st.subheader("Alert-Detailansicht")
+
+if filtered_df.empty:
+    st.info("Für die aktuelle Filterauswahl sind keine Alert-Details verfügbar.")
+else:
+    detail_df = filtered_df.reset_index(drop=True).copy()
+    detail_df["selection_label"] = detail_df.apply(
+        lambda row: (
+            f"{row['timestamp']} | {row['risk']} | "
+            f"{row['event']} | {row['src_ip']}"
+        ),
+        axis=1,
+    )
+
+    selected_label = st.selectbox(
+        "Alert auswählen",
+        detail_df["selection_label"].tolist(),
+    )
+    selected_alert = detail_df[
+        detail_df["selection_label"] == selected_label
+    ].iloc[0]
+
+    detail_col1, detail_col2, detail_col3 = st.columns(3)
+
+    with detail_col1:
+        st.markdown("**Risikostufe**")
+        st.write(selected_alert["risk"])
+        st.markdown("**Wazuh-Level**")
+        st.write(selected_alert["level"])
+        st.markdown("**Rule-ID**")
+        st.write(selected_alert["rule_id"])
+
+    with detail_col2:
+        st.markdown("**Zeitstempel**")
+        st.write(selected_alert["timestamp"])
+        st.markdown("**Agent**")
+        st.write(selected_alert["agent"])
+        st.markdown("**Benutzer**")
+        st.write(selected_alert["user"])
+
+    with detail_col3:
+        st.markdown("**Quell-IP**")
+        st.write(selected_alert["src_ip"])
+        st.markdown("**MITRE ATT&CK**")
+        st.write(selected_alert["mitre"])
+        st.markdown("**Event**")
+        st.write(selected_alert["event"])
+
+    st.markdown("**Handlungsempfehlung**")
+    st.info(selected_alert["recommendation"])
+
+    if selected_alert["risk"] in ("HIGH", "MEDIUM"):
+        if st.button("Ausgewählten Alert mit KI analysieren"):
+            with st.spinner("Lokales LLM analysiert den ausgewählten Alert..."):
+                ai_result = generate_ai_summary(selected_alert.to_dict())
+            st.markdown(ai_result)
+    else:
+        st.caption("Die KI-Analyse ist für MEDIUM- und HIGH-Alerts vorgesehen.")
+
 csv = filtered_df.to_csv(index=False)
 st.download_button(
     label="Download CSV Report",
@@ -120,10 +179,13 @@ else:
     selected_event = st.selectbox(
         "Wähle ein Event für die KI-Analyse",
         unique_events["event"].tolist(),
+        key="general_ai_event",
     )
-    selected_alert = unique_events[unique_events["event"] == selected_event].iloc[0].to_dict()
+    selected_alert = unique_events[
+        unique_events["event"] == selected_event
+    ].iloc[0].to_dict()
 
-    if st.button("KI-Analyse starten"):
+    if st.button("KI-Analyse starten", key="general_ai_button"):
         with st.spinner("Lokales LLM analysiert den Alert..."):
             ai_result = generate_ai_summary(selected_alert)
         st.markdown(ai_result)
